@@ -2,19 +2,21 @@ from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
 
+class Subject(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    grades = db.relationship('Grade', backref='subject', lazy=True)
 
 class Grade(db.Model):
-    # id is primary key
     id = db.Column(db.Integer, primary_key=True)
-    subject = db.Column(db.String(150)) # the subject of the grade
-    data = db.Column(db.String(10000)) # the grades in a given subject (should be a list)
+    data = db.Column(db.String(10000))
     date = db.Column(db.DateTime(timezone=True), default=func.now())
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'))
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
-    grades = db.relationship('Grade')
+    subjects = db.relationship('Subject', backref='user', lazy=True)
