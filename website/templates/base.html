@@ -77,10 +77,10 @@
 
 {% block javascript %}
     <script type="text/javascript">
-      function deleteNote(noteId) {
-  fetch("/delete-note", {
+      function deleteGrade(gradeID) {
+  fetch("/delete-grade", {
     method: "POST",
-    body: JSON.stringify({ noteId: noteId }),
+    body: JSON.stringify({ gradeID: gradeId }),
   }).then((_res) => {
     window.location.href = "/";
   });

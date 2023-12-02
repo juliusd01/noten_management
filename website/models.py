@@ -3,9 +3,10 @@ from flask_login import UserMixin
 from sqlalchemy.sql import func
 
 
-class Note(db.Model):
+class Grade(db.Model):
+    # id is primary key
     id = db.Column(db.Integer, primary_key=True)
-    data = db.Column(db.String(10000))
+    data = db.Column(db.String(10000)) # the grades in a given subject (should be a list)
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
@@ -15,4 +16,4 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
-    notes = db.relationship('Note')
+    grades = db.relationship('Grade')
