@@ -1,10 +1,9 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
-%}
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content %}
 <h1 align="center">Notenübersicht</h1>
 <ul class="list-group list-group-flush" id="grades">
   {% for grade in user.grades %}
   <li class="list-group-item">
-    {{ grade.data }}
+    {{ grade.subject }} - {{ grade.data }} {# Display both grade and subject #}
     <button type="button" class="close" onClick="deleteGrade({{ grade.id }})">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -12,7 +11,11 @@
   {% endfor %}
 </ul>
 <form method="POST">
+  <label for="grade">Grade:</label>
   <textarea name="grade" id="grade" class="form-control"></textarea>
+  <br />
+  <label for="subject">Subject:</label>
+  <input type="text" name="subject" id="subject" class="form-control">
   <br />
   <div align="center">
     <button type="submit" class="btn btn-primary">Add Grade</button>

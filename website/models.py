@@ -6,6 +6,7 @@ from sqlalchemy.sql import func
 class Grade(db.Model):
     # id is primary key
     id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String(150)) # the subject of the grade
     data = db.Column(db.String(10000)) # the grades in a given subject (should be a list)
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))

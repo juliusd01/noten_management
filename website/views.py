@@ -4,6 +4,7 @@ from .models import Grade
 from . import db
 import json
 
+
 views = Blueprint('views', __name__)
 
 
@@ -12,11 +13,14 @@ views = Blueprint('views', __name__)
 def home():
     if request.method == 'POST': 
         grade = request.form.get('grade')#Gets the grade from the HTML 
+        subject = request.form.get('subject')#Gets the subject from the HTML
 
         if len(grade) < 1:
             flash('Grade is too short!', category='error') 
+        elif len(subject) < 2:
+            flash('Subject is too short! Must at least contain 2 characters', category='error')
         else:
-            new_grade = Grade(data=grade, user_id=current_user.id)  #providing the schema for the grade 
+            new_grade = Grade(data=grade, subject=subject, user_id=current_user.id)  #providing the schema for the grade 
             db.session.add(new_grade) #adding the grade to the database 
             db.session.commit()
             flash('Grade added!', category='success')
