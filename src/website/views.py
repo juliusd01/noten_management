@@ -20,7 +20,7 @@ def home():
 
         if len(grade) < 1:
             flash('Grade is too short!', category='error') 
-        elif not subject_id:
+        elif len(subject_id) < 1:
             flash('Please select or add a subject!', category='error')
         else:
             # first try to cast the grade to an integer, to make sure it's a number
@@ -28,6 +28,9 @@ def home():
                 grade = int(grade)
             except ValueError:
                 flash('Die eingetragene Note muss eine Ganzzahl sein!', category='error')
+                return redirect(url_for('views.home'))
+            if grade < 1 or grade > 6:
+                flash('Die eingetragene Note muss zwischen 1 und 6 liegen!', category='error')
                 return redirect(url_for('views.home'))
             
             # Check if a new subject is being added
