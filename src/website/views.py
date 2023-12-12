@@ -6,6 +6,7 @@ import json
 from io import BytesIO
 from flask import send_file
 from reportlab.pdfgen import canvas
+import matplotlib.pyplot as plt
 
 
 views = Blueprint('views', __name__)
@@ -85,10 +86,14 @@ def generate_pdf():
     pdf.drawString(100, 800, f"Leistungsnachweis für {current_user.first_name}")
 
     y_position = 780
+    # a list to save all grades
+    all_grades = []
     for subject in subjects:
         pdf.drawString(100, y_position, f"{subject.name}:")
         y_position -= 15
         for grade in subject.grades:
+            # Save the grade to the list of all grades
+            all_grades.append(grade)
             try:
                 # Try to cast the grade to an integer
                 numeric_grade = int(grade.data)
@@ -98,6 +103,50 @@ def generate_pdf():
                 pdf.drawString(120, y_position, f"Grade: {grade.data} (not numeric)")
 
             y_position -= 15
+    
+    # Make sure to pass only numeric grades to the histogram
+    numeric_grades = []
+    for grade in all_grades:
+        try:
+            numeric_grades.append(int(grade.data))
+        except ValueError:
+            pass
+    
+    histogram_width = 400
+    histogram_height = 300
+    average_grade_position = 100
+    # Create a histogram
+    plt.figure(figsize=(8, 6))
+    plt.hist(numeric_grades, bins=10, edgecolor='black')
+    plt.title('Notenverteilung')
+    plt.xlabel('Note')
+    plt.ylabel('Häufigkeit')
+
+    # Save the histogram as an image
+    plt.savefig('histogram.png')
+
+    # Close the plot to free up resources
+    plt.close()
+
+    # Calculate the position for the histogram in the PDF
+    histogram_position = y_position - histogram_height - 20  # Adjust as needed
+
+    # Add the histogram image to the PDF
+    pdf.drawInlineImage("histogram.png", 100, histogram_position, histogram_width, histogram_height)
+
+    # Calculate average grade position
+    average_grade_position = histogram_position - 50  # Adjust as needed
+
+    # Calculate avergae grade
+    sum_of_grades = 0
+    number_of_grades = 0
+    for grade in numeric_grades:
+        sum_of_grades += grade
+        number_of_grades += 1
+    average_grade = sum_of_grades / number_of_grades
+
+    # Add the average grade to the PDF
+    pdf.drawString(100, average_grade_position, f"Durchschnittsnote: {average_grade}")
 
     pdf.save()
 
