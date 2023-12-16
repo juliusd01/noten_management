@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 align="center">Übersicht</h1>
+<br> <br>
+
+<table>
+    <tr>
+        <th style="padding-right: 50px; font-size: 20px;">Fach</th>  <!-- Increase font size -->
+        <th style="font-size: 20px;">Durchschnittsnote</th>  <!-- Increase font size -->
+    </tr>
+  {% for subject, average in averages.items() %}
+  <tr>
+    <td style="padding-right: 50px;">{{ subject }}</td>  <!-- Add padding to the right of the subject column -->
+    <td>{{ average }}</td>
+  </tr>
+  {% endfor %}
+</table>
+<br> <br>
+
+<h2>Notenverteilungstabelle</h2>
+<img src="data:image/png;base64,{{ histogram }}" alt="Notenübersichtstabelle">
+{% endblock %}

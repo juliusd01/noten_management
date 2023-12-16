@@ -7,7 +7,10 @@ from io import BytesIO
 from flask import send_file
 from reportlab.pdfgen import canvas
 import matplotlib.pyplot as plt
-
+import numpy as np
+import base64
+import matplotlib
+matplotlib.use('Agg')
 
 views = Blueprint('views', __name__)
 
@@ -57,6 +60,51 @@ def home():
 
     subjects = Subject.query.filter_by(user_id=current_user.id).all()
     return render_template("home.html", user=current_user, subjects=subjects)
+
+@views.route('/dashboard', methods=['GET'])
+@login_required
+def dashboard():
+    # Fetch the user's subjects from the database
+    subjects = Subject.query.filter_by(user_id=current_user.id).all()
+
+    # Prepare a dictionary to hold the average grade for each subject
+    averages = {}
+    all_grades = []
+
+    for subject in subjects:
+        # Get all grades for this subject
+        grades = [int(grade.data) for grade in subject.grades]
+        all_grades.extend(grades)
+
+        # Calculate the average grade for this subject
+        try:
+            average = sum(int(grade) for grade in grades) / len(grades)
+            average = round(average, 1)
+        except ValueError:
+            average = "N/A"
+
+        # Store the average grade in the averages dictionary
+        averages[subject.name] = average
+    
+    bins = range(1,8)
+    # Create a histogram of all grades
+    plt.hist(all_grades, bins=bins, edgecolor='black', align='left')
+    plt.title('Notenverteilung')
+    plt.xlabel('Note')
+    plt.ylabel('Häufigkeit')
+    plt.xticks(bins[:-1])
+    plt.tight_layout()
+
+    # Save the plot to a BytesIO object
+    buf = BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+
+    # Convert the BytesIO object to a base64 string
+    histogram = base64.b64encode(buf.read()).decode('utf-8')
+
+    # Render the dashboard template with the averages
+    return render_template("dashboard.html", averages=averages, user=current_user, histogram=histogram)
 
 
 @views.route('/delete-grade', methods=['POST'])
@@ -121,9 +169,6 @@ def generate_pdf():
     plt.title('Notenverteilung')
     plt.xlabel('Note')
     plt.ylabel('Häufigkeit')
-
-    # Save the histogram as an image
-    plt.savefig('histogram.png')
 
     # Close the plot to free up resources
     plt.close()

@@ -4,3 +4,4 @@ flask-login
 flask_sqlalchemy
 reportlab
 matplotlib
+numpy
