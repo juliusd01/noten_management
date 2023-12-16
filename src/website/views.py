@@ -9,6 +9,7 @@ from reportlab.pdfgen import canvas
 import matplotlib.pyplot as plt
 import numpy as np
 import base64
+from datetime import datetime
 import matplotlib
 matplotlib.use('Agg')
 
@@ -131,44 +132,47 @@ def generate_pdf():
 
     # Create the PDF
     pdf = canvas.Canvas(buffer)
-    pdf.drawString(100, 800, f"Leistungsnachweis für {current_user.first_name}")
+    pdf.drawString(225, 800, f"Leistungsnachweis für {current_user.first_name}")
+
+    # Draw the date
+    pdf.setFont("Helvetica", 12)
+    pdf.drawString(480, 790, f"Datum: {datetime.now().strftime('%d.%m.%Y')}")
 
     y_position = 780
     # a list to save all grades
     all_grades = []
     for subject in subjects:
-        pdf.drawString(100, y_position, f"{subject.name}:")
-        y_position -= 15
-        for grade in subject.grades:
-            # Save the grade to the list of all grades
-            all_grades.append(grade)
-            try:
-                # Try to cast the grade to an integer
-                numeric_grade = int(grade.data)
-                pdf.drawString(120, y_position, f"Grade: {numeric_grade}")
-            except ValueError:
-                # Handle the case where the grade cannot be cast to an integer
-                pdf.drawString(120, y_position, f"Grade: {grade.data} (not numeric)")
+        # Calculate the average grade for this subject
+        grades = [int(grade.data) for grade in subject.grades if grade.data.isdigit()]
+        all_grades.extend(grades)
+        average = sum(grades) / len(grades) if grades else "N/A"
+        average = round(average, 1)
 
-            y_position -= 15
+        # Draw the subject name and average grade
+        pdf.drawString(100, y_position, f"{subject.name}: {average}")
+        y_position -= 15
     
     # Make sure to pass only numeric grades to the histogram
     numeric_grades = []
     for grade in all_grades:
         try:
-            numeric_grades.append(int(grade.data))
+            numeric_grades.append(int(grade))
         except ValueError:
             pass
     
     histogram_width = 400
     histogram_height = 300
     average_grade_position = 100
+    bins = range(1,8)
     # Create a histogram
     plt.figure(figsize=(8, 6))
-    plt.hist(numeric_grades, bins=10, edgecolor='black')
+    plt.hist(numeric_grades, bins=bins, edgecolor='black', align='left')
     plt.title('Notenverteilung')
     plt.xlabel('Note')
     plt.ylabel('Häufigkeit')
+
+    # Save histogram to png
+    plt.savefig("histogram.png")
 
     # Close the plot to free up resources
     plt.close()
@@ -191,7 +195,7 @@ def generate_pdf():
     average_grade = sum_of_grades / number_of_grades
 
     # Add the average grade to the PDF
-    pdf.drawString(100, average_grade_position, f"Durchschnittsnote: {average_grade}")
+    pdf.drawString(100, average_grade_position, f"Durchschnittsnote: {round(average_grade, 1)}")
 
     pdf.save()
 
