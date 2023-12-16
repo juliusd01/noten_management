@@ -17,3 +17,6 @@ sudo docker pull juliusdoebelt01/noten_manager:latest
 ```sh
 sudo docker run -p 80:5000 juliusdoebelt01/noten_manager:latest
 ```
+
+## Use existing software
+Go to http://185.128.118.134:8080 and experiment with it (only until 03/2024).
