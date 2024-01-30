@@ -1,22 +1,20 @@
-# Web Service Notenmanagement
+# Noten_Management_System
 
-## Connect to virtual machine
+
+## General Architecture
+We want to create 3 Microservices for our Grade Management System .
+
+![microservices](/img/WhatsApp%20Bild%202023-10-24%20um%2014.28.49_7437c13d.jpg)
+
+## How to quickly execute code
+
+```sh
+docker compose up -d
+```
+
+
+## Connecting to virtual machine
 ```sh
 ssh -i /path/to/private_key debian@185.128.118.134
 ```
-
-## Pulling docker image from dockerhub
-```sh
-sudo docker login
-```
-```sh
-sudo docker pull juliusdoebelt01/noten_manager:latest
-```
-
-## Run Docker container on port 80
-```sh
-sudo docker run -p 80:5000 juliusdoebelt01/noten_manager:latest
-```
-
-## Use existing software
-Go to http://185.128.118.134:8080 and experiment with it (only until 03/2024).
+**Make sure to replace /path/to/private_key with the actual path**!

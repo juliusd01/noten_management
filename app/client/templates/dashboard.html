@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 align="center">Dashboard</h1>
+<br> <br>
+
+{% if averages %}
+    <table>
+        <tr>
+            <th style="padding-right: 50px; font-size: 20px;">Subject</th>  <!-- Increase font size -->
+            <th style="font-size: 20px;">Average Grade</th>  <!-- Increase font size -->
+        </tr>
+    {% for subject, average in averages.items() %}
+    <tr>
+        <td style="padding-right: 50px;">{{ subject }}</td>  <!-- Add padding to the right of the subject column -->
+        <td>{{ average }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+
+    <br> 
+    <br>
+
+    <h2>Grade distribution</h2>
+    <img src="data:image/png;base64,{{ histogram }}" alt="Grade overview">
+
+    <br>
+    <br>
+    
+    <form action="/generate_pdf", method="GET">
+        <div align="center">
+            <button type="submit" class="btn btn-primary">Create transcript</button>
+        </div>
+    </form>
+
+    <br> <br>
+
+    {% else %}
+        <h3 align="center">Add grades to view dashboard!</h3>
+{% endif %}
+
+
+
+{% endblock %}

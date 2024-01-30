@@ -1,0 +1,6 @@
+username.txt
+/builds
+.DS_Store
+.vscode
+website/__pycache__
+website/database.db

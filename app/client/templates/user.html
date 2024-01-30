@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<h1 align="center">Account Data</h1>
+    
+<form method="post" action="/user">
+
+  <h3 align="center">Change Password</h3>
+
+  <input type="hidden" name="_method" value="put">
+
+  <div class="form-group">
+    <label for="password">New Password:</label>
+    <input type="password" class="form-control" name="password" id="password" placeholder="Enter new Password" required>
+  </div>      
+  <br>
+
+  <div class="form-group">
+    <label for="password_confirm">Confirm new Password:</label>
+    <input type="password" class="form-control" name="password_confirm" id="password_confirm" placeholder="Confirm new Password" required>
+  </div>
+  <br>
+   
+  <div align="center">
+    <button type="submit" class="btn btn-primary">Change Password</button>
+  </div>
+</form>
+
+<br>
+<br>
+
+<form method="post" action="/user">
+
+  <h3 align="center">Delete Account</h3>
+
+  <input type="hidden" name="_method" value="delete">
+
+  <div class="form-group" align="center">
+    <input type="checkbox" id="delete_confirm" name="delete_confirm" required>
+    <label for="delete_confirm"> I want to delete my account</label>
+  </div>
+  <br>
+
+  <div align="center">
+    <button type="submit" class="btn btn-primary">Delete Account</button>
+  </div>
+</form>
+{% endblock %}

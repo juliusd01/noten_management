@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h1 align="center">Overview</h1>
+
+{% if data %}
+  {% for subject, grades in data.items() %}
+    <h3>{{ subject }}</h3>
+    <ul class="list-group list-group-flush" id="grades">
+      {% for grade in grades %}
+      <li class="list-group-item">
+        {{ grade }}
+        <button type="button" class="close" onclick="deleteGrade('{{grade}}', '{{subject}}')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+{% endif %}
+
+<form method="POST">
+  <label for="subject">Subject:</label>
+  <select name="subject" id="subject" class="form-control">
+    <option value="" disabled selected>Select or add subject</option>
+    {% if data %}
+      {% for subject, grades in data.items() %}
+        <option value="{{ subject }}">{{ subject }}</option>
+      {% endfor %}
+    {% endif %}
+    <option value="new">Add new subject</option>
+  </select>
+  <br />
+
+  <!-- Add an input field for new subjects -->
+  <div id="newSubjectInput" style="display: none;">
+    <label for="newSubject">New Subject:</label>
+    <input type="text" name="newSubject" id="newSubject" class="form-control">
+    <br />
+  </div>
+
+  <label for="grade">Grade:</label>
+  <textarea name="grade" id="grade" class="form-control"></textarea>
+  <br />
+  <div align="center">
+    <button type="submit" class="btn btn-primary">Add grade</button>
+  </div>
+</form>
+
+<!-- Add JavaScript to show/hide the new subject input field -->
+<script>
+  document.getElementById('subject').addEventListener('change', function () {
+    var newSubjectInput = document.getElementById('newSubjectInput');
+    newSubjectInput.style.display = this.value === 'new' ? 'block' : 'none';
+  });
+</script>
+
+<!-- Add this script to handle the button click and send AJAX request -->
+<script>
+  function deleteGrade(grade, subject) {
+    console.log("Deleting grade: " + grade + " for subject: " + subject)
+    // Send an AJAX request to the Flask endpoint
+    fetch('/delete_grade', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        grade: grade,
+        subject: subject
+      }),
+    })
+    .then(response => {
+        if (response.ok) {
+            // Reload the current page
+            window.location.reload();
+        } else {
+            console.error('Error deleting grade');
+        }
+    })
+  }
+</script>
+{% endblock %}

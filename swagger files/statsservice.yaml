@@ -1,0 +1,55 @@
+openapi: 3.0.0
+info:
+  title: Stats Service
+  description: Dieser Service bietet Funktionen zur Generierung von statistischen Daten über die Noten in den jeweiligen Fächern der Benutzer und ermöglicht das Erstellen eines PDF-Transkripts mit einer statistischen Notenübersicht. 
+  version: 1.0.0
+paths:
+  /stats:
+    get:
+      summary: Get statistical information for the authenticated user
+      operationId: getStats
+      tags:
+        - Stats
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                averages:
+                  Subject1: 4.3
+                  Subject2: 3.7
+                histogram: "base64_encoded_image"
+        '400':
+          description: Missing or invalid access token
+        '401':
+          description: Error while fetching grades
+        '204':
+          description: No grades added
+  /stats/pdf:
+    get:
+      summary: Generate a PDF transcript for the authenticated user
+      operationId: generatePdf
+      tags:
+        - Stats
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/pdf:
+              example: transcript_username.pdf
+        '400':
+          description: Missing or invalid access token
+        '401':
+          description: Error while fetching grades
+        '204':
+          description: No grades added
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer

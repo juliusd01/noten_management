@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: Proxy Service
+  description: |-
+    Der Proxy-Service fungiert als Vermittler für Anfragen an die verschiedenen Mikroservices. Sein Hauptzweck besteht darin, Anfragen an spezifische Endpunkte an die entsprechenden Mikroservices weiterzuleiten. Dabei wird der Service über einen Template-Parameter gesteuert, der in der Anfrage angegeben ist.
+
+    Wenn der Template-Parameter "login" oder "user" ist, wird die Anfrage an den user_service weitergeleitet.
+    
+    Wenn der Template-Parameter "grades" ist, wird die Anfrage an den grade_service weitergeleitet.
+    
+    Wenn der Template-Parameter "stats" oder "stats/pdf" ist, wird die Anfrage an den stats_service weitergeleitet.
+    
+    Der Proxy extrahiert den Template-Parameter aus der Abfragezeichenfolge, bestimmt den entsprechenden Dienst, baut die Ziel-URL zusammen und leitet dann die Anfrage an diesen Dienst weiter. Die erhaltenen Antworten werden dann an den ursprünglichen Client zurückgegeben.
+  version: 1.0.0
+paths:
+  /:
+    get:
+      summary: Proxy GET Request
+      parameters:
+        - in: query
+          name: template
+          required: true
+          description: Microservice template (e.g., 'user', 'grades')
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful proxy response
+        '400':
+          description: Bad Request - Template not specified
+          content:
+            application/json:
+              example:
+                error: Template not specified
+        '404':
+          description: Not Found - Invalid service in the template
+          content:
+            application/json:
+              example:
+                error: Invalid service
+    post:
+      summary: Proxy POST Request
+      parameters:
+        - in: query
+          name: template
+          required: true
+          description: Microservice template (e.g., 'login', 'stats/pdf')
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful proxy response
+        '400':
+          description: Bad Request - Template not specified
+          content:
+            application/json:
+              example:
+                error: Template not specified
+        '404':
+          description: Not Found - Invalid service in the template
+          content:
+            application/json:
+              example:
+                error: Invalid service
+    put:
+      summary: Proxy PUT Request
+      parameters:
+        - in: query
+          name: template
+          required: true
+          description: Microservice template (e.g., 'user', 'grades')
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful proxy response
+        '400':
+          description: Bad Request - Template not specified
+          content:
+            application/json:
+              example:
+                error: Template not specified
+        '404':
+          description: Not Found - Invalid service in the template
+          content:
+            application/json:
+              example:
+                error: Invalid service
+    delete:
+      summary: Proxy DELETE Request
+      parameters:
+        - in: query
+          name: template
+          required: true
+          description: Microservice template (e.g., 'grades', 'user')
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful proxy response
+        '400':
+          description: Bad Request - Template not specified
+          content:
+            application/json:
+              example:
+                error: Template not specified
+        '404':
+          description: Not Found - Invalid service in the template
+          content:
+            application/json:
+              example:
+                error: Invalid service

@@ -1,0 +1,165 @@
+openapi: 3.0.0
+info:
+  title: User Service
+  description: Der User Service ist verantwortlich für die Verwaltung von Benutzerinformationen einschließlich Benutzerregistrierung, Authentifizierung und Benutzerverwaltung wie Aktualisieren und Löschen. 
+  version: 1.0.0
+paths:
+  /user:
+    get:
+      summary: Get User
+      description: Get the details of the authenticated user.
+      tags: 
+        - User
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              example:
+                user: example_user
+        '401':
+          description: Unauthorized - Missing or invalid token
+          content:
+            application/json:
+              example:
+                message: Missing or invalid token
+    put:
+      summary: Update User Password
+      description: Update the password of the authenticated user.
+      tags: 
+        - User
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Password updated successfully
+          content:
+            application/json:
+              example:
+                message: Password updated successfully!
+        '400':
+          description: Bad Request - Missing password or password too short
+          content:
+            application/json:
+              example:
+                message: Missing password parameter!
+        '401':
+          description: Unauthorized - Missing or invalid token
+          content:
+            application/json:
+              example:
+                message: Missing or invalid token
+    delete:
+      summary: Delete User
+      description: Delete the authenticated user.
+      tags:
+        - User
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User deleted successfully
+          content:
+            application/json:
+              example:
+                message: User deleted successfully!
+        '401':
+          description: Unauthorized - Missing or invalid token
+          content:
+            application/json:
+              example:
+                message: Missing or invalid token
+        '404':
+          description: Not Found - User not found
+          content:
+            application/json:
+              example:
+                message: User not found
+    post:
+      summary: Register User
+      description: Register a new user.
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              example:
+                message: User created successfully!
+        '400':
+          description: Bad Request - Missing username or password
+          content:
+            application/json:
+              example:
+                message: Missing username or password parameter!
+        '409':
+          description: Conflict - User already exists
+          content:
+            application/json:
+              example:
+                message: User already exists!
+  /login:
+    post:
+      summary: Login User
+      description: Authenticate and generate an access token for the user.
+      tags: 
+        - Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              example:
+                access_token: example_token
+        '400':
+          description: Bad Request - Missing username or password
+          content:
+            application/json:
+              example:
+                message: Missing username or password!
+        '401':
+          description: Unauthorized - Invalid credentials
+          content:
+            application/json:
+              example:
+                message: Invalid credentials
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

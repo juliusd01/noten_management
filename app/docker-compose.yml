@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  user_service:
+    build:
+      context: user_service
+    networks:
+      - rest-net
+  client:
+    build:
+      context: client
+    ports: 
+     - "30000:30000"
+    networks:
+     - rest-net
+  proxy:
+    build:
+      context: proxy
+    networks:
+     - rest-net
+  grade_service:
+    build:
+      context: grade_service
+    networks:
+      - rest-net
+  stats_service:
+    build:
+      context: stats_service
+    networks:
+      - rest-net
+networks:
+  rest-net:
+    driver: bridge

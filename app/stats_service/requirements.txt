@@ -1,0 +1,6 @@
+flask
+reportlab
+matplotlib
+numpy
+datetime
+requests

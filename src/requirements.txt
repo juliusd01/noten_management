@@ -1,8 +1,0 @@
-flask
-Flask-SQLAlchemy
-flask-login
-flask_sqlalchemy
-reportlab
-matplotlib
-numpy
-datetime

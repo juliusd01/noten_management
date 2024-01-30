@@ -1,0 +1,87 @@
+openapi: 3.0.0
+info:
+  title: Grade Service
+  description: Der Grade Service ermöglicht das Hinzufügen, Abfragen und Löschen von Noten in Verbindung mit verschiedenen Schulfächern für den jeweiligen Benutzer.
+  version: 1.0.0
+paths:
+  /grades:
+    get:
+      summary: Retrieve grades for the authenticated user
+      operationId: getGrades
+      tags:
+        - Grades
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                Subject1: [5, 4, 6]
+                Subject2: [3, 2, 1]
+        '400':
+          description: Missing or invalid access token
+    put:
+      summary: Add a new grade or subject
+      operationId: addGrade
+      tags:
+        - Grades
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            example:
+              grade: 4
+              subject: Subject1
+        required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+        '400':
+          description: Missing or invalid parameters
+    delete:
+      summary: Delete a grade or subject
+      operationId: deleteGrade
+      tags:
+        - Grades
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+        '400':
+          description: Missing or invalid parameters
+  /subjects:
+    delete:
+      summary: Delete all subjects and grades for the authenticated user
+      operationId: deleteAllSubjects
+      tags:
+        - Subjects
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+        '400':
+          description: Missing or invalid parameters
+        '500':
+          description: Internal server error
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
